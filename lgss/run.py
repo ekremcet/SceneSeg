@@ -17,7 +17,8 @@ from utilis.package import *
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Runner')
+    parser = argparse.ArgumentParser(description='Run the demo with threshold')
+    parser.add_argument('threshold', help='threshold for detection')
     parser.add_argument('config', help='config file path')
     args = parser.parse_args()
     return args
@@ -25,6 +26,7 @@ def parse_args():
 
 args = parse_args()
 cfg = Config.fromfile(args.config)
+demo_threshold = float(args.threshold)
 os.environ["CUDA_VISIBLE_DEVICES"] = cfg.gpus
 if cfg.trainFlag:  # copy running config to run files
     writer = SummaryWriter(logdir=cfg.logger.logs_dir)
@@ -202,7 +204,7 @@ def main():
         if cfg.dataset.name == "demo":
             print('...visualize scene video in demo mode, '
                   'the above quantitive metrics are invalid')
-            scene_dict, scene_list = pred2scene(cfg, threshold=0.8)
+            scene_dict, scene_list = pred2scene(cfg, threshold=demo_threshold)
             scene2video(cfg, scene_list)
 
 
